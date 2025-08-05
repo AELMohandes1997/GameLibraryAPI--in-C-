@@ -2,6 +2,12 @@ using GameLibraryAPI.Data;
 using GameLibraryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GameLibraryAPI.Services;
+using GameLibraryAPI.Dtos;
+using System.Threading.Tasks;
+using System.Collections.Generic;  
+using System.Linq;
+using System;
 
 namespace GameLibraryAPI.Controllers;
 
@@ -9,24 +15,40 @@ namespace GameLibraryAPI.Controllers;
 [ApiController]
 public class GamesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IGameService _gameService;
 
-    public GamesController(ApplicationDbContext context)
+    public GamesController(IGameService gameService)
     {
-        _context = context;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Game>>> GetGames()
-    {
-        return await _context.Games.Include(g => g.Genre).ToListAsync();
+        _gameService = gameService;
     }
 
     [HttpPost]
-    public async Task<ActionResult<Game>> PostGame(Game game)
+    public async Task<ActionResult<GameDto>> Create(GameCreateDto dto)
     {
-        _context.Games.Add(game);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetGames), new { id = game.Id }, game);
+        var result = await _gameService.CreateAsync(dto).ConfigureAwait(false);
+        return CreatedAtAction(nameof(GetType), new { id = result.Id }, result);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, GameUpdateDto dto)
+    {
+        var success = await _gameService.UpdateAsync(id, dto).ConfigureAwait(false);
+        return success ? NoContent() : NotFound();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var success = await _gameService.SoftDeleteAsync(id).ConfigureAwait(false);
+        return success ? NoContent() : NotFound();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GameDto>> Get(int id)
+    {
+        var game = await _gameService.GetByIdAsync(id).ConfigureAwait(false);
+        if (game == null)
+            return NotFound();
+        return Ok(game);
     }
 }

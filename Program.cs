@@ -1,11 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using GameLibraryAPI;
 using GameLibraryAPI.Data;
+using GameLibraryAPI.Services;
+using GameLibraryAPI.Models;
+using GameLibraryAPI.Dtos;
+using GameLibraryAPI.Controllers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +23,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

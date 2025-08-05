@@ -3,7 +3,7 @@ using GameLibraryAPI.Models;
 
 namespace GameLibraryAPI.Models;
 
-public class Game
+public class Game : BaseEntity
 {
     public int Id { get; set; }
     public string Title { get; set; }
