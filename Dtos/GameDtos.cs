@@ -23,7 +23,7 @@ public class GameDto
     public string Title { get; set; }
     public int ReleaseYear { get; set; }
     public string Developer { get; set; }
-    public GenreDto Genre { get; set; }
+    public string GenreName { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 

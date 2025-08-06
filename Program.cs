@@ -25,6 +25,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
